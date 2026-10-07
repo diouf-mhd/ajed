@@ -1,7 +1,7 @@
 import type { Action, BeforeAfter, Edition, Quartier } from "@prisma/client";
 import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
 import { DeleteButton, SubmitButton } from "./ui";
-import { CATEGORIES, toInputDate } from "@/lib/utils";
+import { toInputDate } from "@/lib/utils";
 import { deleteAction, deleteBeforeAfter, saveAction } from "@/app/admin/server-actions";
 
 type FormAction = Action & { beforeAfter: BeforeAfter | null; quartiers: Quartier[] };
@@ -49,12 +49,7 @@ export function ActionForm({ action, editions, quartiers }: { action?: FormActio
             <Field label="Lien vidéo" name="videoUrl" type="url" defaultValue={action?.videoUrl ?? ""} />
             <ImageField label="Image principale" name="cover" keepName="coverImage" current={action?.coverImage} />
             <ImageField label="Affiche d'annonce" name="posterFile" keepName="poster" current={action?.poster} />
-            <fieldset className="space-y-3 rounded-xl bg-white p-4">
-              <legend className="px-2 text-sm font-bold">Photos de l&apos;action</legend>
-              <input type="file" name="photos" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="block w-full text-sm" />
-              <Select label="Catégorie" name="photoCategory" options={[...CATEGORIES]} defaultValue="NETTOYAGE" />
-              <Select label="Quartier associé (facultatif)" name="photoQuartierId" options={[{ value: "", label: "Tous les quartiers de cette journée" }, ...quartiers.map((quartier) => ({ value: quartier.id, label: quartier.name }))]} />
-            </fieldset>
+            <p className="text-sm text-ink/65">Après création, ajoutez les photos de la journée depuis la Galerie en associant cette action.</p>
             <fieldset className="space-y-3 rounded-xl bg-white p-4">
               <legend className="px-2 text-sm font-bold">Avant / Après</legend>
               <ImageField label="Image AVANT" name="before" keepName="beforeUrl" current={action?.beforeAfter?.beforeUrl} />

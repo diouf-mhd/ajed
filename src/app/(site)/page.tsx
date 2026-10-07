@@ -37,7 +37,7 @@ export default async function HomePage() {
   const slides = latest.map((a) => ({
     slug: a.slug, title: a.title, date: formatDate(a.date), time: a.time, location: a.location, summary: a.summary, image: a.coverImage,
   }));
-  const heroImage = settings.heroImage || latest[0]?.coverImage;
+  const heroImage = settings.heroImage;
 
   return (
     <>

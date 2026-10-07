@@ -142,6 +142,42 @@ export async function uploadPhotos(formData: FormData) {
   redirect("/admin/galerie");
 }
 
+export async function saveUploadedPhotos(input: {
+  urls: string[];
+  title: string;
+  actionId: string;
+  quartierId: string;
+  category: string;
+  date: string;
+}) {
+  await requireAdmin();
+  if (input.urls.length === 0 || input.urls.length > 50) throw new Error("Sélectionnez entre 1 et 50 photos.");
+
+  const urls = input.urls.map((value) => {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".public.blob.vercel-storage.com")) {
+      throw new Error("URL de photo invalide.");
+    }
+    return url.toString();
+  });
+  const selectedCategory = CATEGORIES.find((item) => item.value === input.category)?.value ?? "AUTRES";
+  const date = new Date(`${input.date || new Date().toISOString().slice(0, 10)}T12:00:00Z`);
+  if (!Number.isFinite(date.getTime())) throw new Error("Date invalide.");
+
+  await db.photo.createMany({
+    data: urls.map((url) => ({
+      url,
+      title: urls.length === 1 ? input.title.trim() || null : null,
+      actionId: input.actionId || null,
+      quartierId: input.quartierId || null,
+      category: selectedCategory,
+      date,
+    })),
+  });
+  refresh();
+  return { count: urls.length };
+}
+
 export async function deletePhoto(formData: FormData) {
   await requireAdmin();
   await db.photo.delete({ where: { id: str(formData, "id") } });

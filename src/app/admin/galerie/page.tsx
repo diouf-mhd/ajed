@@ -1,8 +1,9 @@
-import { DropZone, DeleteButton, SubmitButton } from "@/components/admin/ui";
-import { Field, PageHeader, Select } from "@/components/admin/fields";
+import { DeleteButton } from "@/components/admin/ui";
+import { PageHeader } from "@/components/admin/fields";
+import { GalleryUploadForm } from "@/components/admin/GalleryUploadForm";
 import { db } from "@/lib/db";
-import { CATEGORIES, categoryLabel, toInputDate } from "@/lib/utils";
-import { deletePhoto, uploadPhotos } from "./../server-actions";
+import { categoryLabel } from "@/lib/utils";
+import { deletePhoto } from "./../server-actions";
 
 export default async function AdminGallery() {
   const [photos, actions, quartiers] = await Promise.all([
@@ -14,17 +15,7 @@ export default async function AdminGallery() {
   return (
     <div className="max-w-5xl">
       <PageHeader title="Galerie" />
-      <form action={uploadPhotos} className="space-y-4 rounded-3xl bg-white p-6 ring-1 ring-black/10">
-        <DropZone />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Select label="Catégorie" name="category" options={[...CATEGORIES]} />
-          <Select label="Action associée" name="actionId" options={[{ value: "", label: "Aucune" }, ...actions.map((a) => ({ value: a.id, label: a.title }))]} />
-          <Select label="Quartier associé (facultatif)" name="quartierId" options={[{ value: "", label: "Aucun" }, ...quartiers.map((quartier) => ({ value: quartier.id, label: quartier.name }))]} />
-          <Field label="Date" name="date" type="date" defaultValue={toInputDate(new Date())} />
-          <Field label="Titre (facultatif, si une seule photo)" name="title" />
-        </div>
-        <SubmitButton>Envoyer les photos</SubmitButton>
-      </form>
+      <GalleryUploadForm actions={actions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} />
 
       <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {photos.map((p) => (
