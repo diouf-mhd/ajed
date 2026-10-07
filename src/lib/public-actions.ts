@@ -2,7 +2,7 @@
 
 import { db } from "./db";
 
-export type JoinState = { ok: boolean; message: string } | null;
+export type JoinState = { ok: boolean; message: string; whatsappUrl?: string } | null;
 
 export async function submitApplication(_prev: JoinState, formData: FormData): Promise<JoinState> {
   // Champ piège anti-spam : un humain ne le remplit pas.
@@ -17,5 +17,16 @@ export async function submitApplication(_prev: JoinState, formData: FormData): P
   if (!email && !phone) return { ok: false, message: "Laissez un email ou un numéro pour qu'on puisse vous répondre." };
 
   await db.application.create({ data: { name, email: email || null, phone: phone || null, message } });
-  return { ok: true, message: "Merci ! Nous revenons vers vous très vite." };
+  const whatsappMessage = [
+    "Bonjour, je souhaite participer aux actions de l'AJED.",
+    `Nom : ${name}`,
+    `Téléphone : ${phone || "Non renseigné"}`,
+    `Email : ${email || "Non renseigné"}`,
+    `Message : ${message}`,
+  ].join("\n");
+  return {
+    ok: true,
+    message: "Candidature enregistrée. Redirection vers WhatsApp…",
+    whatsappUrl: `https://wa.me/221779061173?text=${encodeURIComponent(whatsappMessage)}`,
+  };
 }

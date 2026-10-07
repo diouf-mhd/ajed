@@ -1,10 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { submitApplication, type JoinState } from "@/lib/public-actions";
 
 export function JoinSection({ compact = false }: { compact?: boolean }) {
   const [state, action, pending] = useActionState<JoinState, FormData>(submitApplication, null);
+
+  useEffect(() => {
+    if (state?.ok && state.whatsappUrl) window.location.assign(state.whatsappUrl);
+  }, [state]);
 
   return (
     <section id="rejoindre" className={compact ? "" : "bg-sun"}>
@@ -37,6 +41,9 @@ export function JoinSection({ compact = false }: { compact?: boolean }) {
           </button>
           {state && (
             <p role="status" className={state.ok ? "font-semibold text-forest" : "font-semibold text-red-700"}>{state.message}</p>
+          )}
+          {state?.whatsappUrl && (
+            <a href={state.whatsappUrl} className="btn-forest w-full">Ouvrir WhatsApp</a>
           )}
         </form>
       </div>
