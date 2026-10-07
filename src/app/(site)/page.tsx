@@ -9,6 +9,7 @@ import { NewsCard } from "@/components/site/NewsCard";
 import { JoinSection } from "@/components/site/JoinSection";
 import { ContactInfo } from "@/components/site/ContactInfo";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { Img } from "@/components/ui/Img";
 import { getBeforeAfters, getEditions, getFeaturedActions, getLatestActions, getNews, getPhotos, getQuartiers, getSettings, getStats, getUpcomingEvents } from "@/lib/data";
 import { formatDate, isUpcoming } from "@/lib/utils";
 
@@ -53,6 +54,26 @@ export default async function HomePage() {
       <section aria-label="Dernières actions" className="relative z-10 -mt-24 sm:-mt-32">
         <div className="wrap"><ActionsCarousel slides={slides} /></div>
       </section>
+
+      {events.length > 0 && (
+        <section className="section bg-chalk">
+          <div className="wrap">
+            <SectionTitle title="Prochains rendez-vous" />
+            <ul className="mt-8 grid gap-4 md:grid-cols-3">
+              {events.map((event) => (
+                <li key={event.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
+                  <Img src={event.image} alt={event.title} className="aspect-[16/9] w-full bg-forest" />
+                  <div className="p-5">
+                    <p className="font-semibold text-leaf">{formatDate(event.date)}{event.time ? ` · ${event.time}` : ""}</p>
+                    <h3 className="mt-2 text-xl font-bold text-forest">{event.title}</h3>
+                    <p className="mt-1 text-ink/70">{event.location}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {editions[0] && editionActions && (
         <section id="edition" className="section bg-chalk">
@@ -157,23 +178,6 @@ export default async function HomePage() {
             <div className="mt-10">
               <Gallery showFilters={false} photos={photos.map((p) => ({ id: p.id, url: p.url, title: p.title, category: p.category, actionTitle: p.action?.title ?? null }))} />
             </div>
-          </div>
-        </section>
-      )}
-
-      {events.length > 0 && (
-        <section className="section bg-chalk">
-          <div className="wrap">
-            <SectionTitle title="Prochains rendez-vous" />
-            <ul className="mt-8 grid gap-4 md:grid-cols-3">
-              {events.map((e) => (
-                <li key={e.id} className="rounded-3xl bg-white p-6 ring-1 ring-black/10">
-                  <p className="font-semibold text-leaf">{formatDate(e.date)}{e.time ? ` · ${e.time}` : ""}</p>
-                  <h3 className="mt-2 text-xl font-bold text-forest">{e.title}</h3>
-                  <p className="mt-1 text-ink/70">{e.location}</p>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
       )}
