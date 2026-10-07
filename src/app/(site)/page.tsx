@@ -35,9 +35,16 @@ export default async function HomePage() {
   ]);
 
   const slides = latest.map((a) => ({
-    slug: a.slug, title: a.title, date: formatDate(a.date), time: a.time, location: a.location, summary: a.summary, image: a.coverImage,
+    slug: a.slug, title: a.title, date: formatDate(a.date), time: a.time, location: a.location, summary: a.summary,
+    image: isUpcoming(a.date) ? a.poster ?? a.coverImage : a.coverImage,
   }));
   const heroImage = settings.heroImage;
+  const editionActions = editions[0]?.actions.slice().sort((a, b) => {
+    const aUpcoming = isUpcoming(a.date);
+    const bUpcoming = isUpcoming(b.date);
+    if (aUpcoming !== bUpcoming) return aUpcoming ? -1 : 1;
+    return aUpcoming ? a.date.getTime() - b.date.getTime() : b.date.getTime() - a.date.getTime();
+  });
 
   return (
     <>
@@ -47,27 +54,12 @@ export default async function HomePage() {
         <div className="wrap"><ActionsCarousel slides={slides} /></div>
       </section>
 
-      <section id="mission" className="section">
-        <div className="wrap">
-          <SectionTitle title="Une jeunesse qui agit pour Dougar" intro="L'AJED réunit des jeunes décidés à améliorer concrètement le cadre de vie de leur ville." />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {MISSION.map((m) => (
-              <div key={m.title} className={`rounded-3xl p-8 ${m.cls}`}>
-                <p className="text-4xl" aria-hidden>{m.emoji}</p>
-                <h3 className="mt-4 text-2xl font-bold">{m.title}</h3>
-                <p className="mt-2 max-w-sm opacity-85">{m.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {editions[0] && (
+      {editions[0] && editionActions && (
         <section id="edition" className="section bg-chalk">
           <div className="wrap">
             <SectionTitle title={`${editions[0].title} à Dougar`} intro="Une édition, plusieurs journées, des quartiers mobilisés." />
             <ol className="mt-10 grid gap-4 md:grid-cols-3">
-              {editions[0].actions.map((action) => {
+              {editionActions.map((action) => {
                 const upcoming = isUpcoming(action.date);
                 return (
                   <li key={action.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
@@ -102,6 +94,21 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section id="mission" className="section">
+        <div className="wrap">
+          <SectionTitle title="Une jeunesse qui agit pour Dougar" intro="L'AJED réunit des jeunes décidés à améliorer concrètement le cadre de vie de leur ville." />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {MISSION.map((m) => (
+              <div key={m.title} className={`rounded-3xl p-8 ${m.cls}`}>
+                <p className="text-4xl" aria-hidden>{m.emoji}</p>
+                <h3 className="mt-4 text-2xl font-bold">{m.title}</h3>
+                <p className="mt-2 max-w-sm opacity-85">{m.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="actions" className="section bg-chalk">
         <div className="wrap">
           <div className="flex flex-wrap items-end justify-between gap-4">
@@ -112,7 +119,7 @@ export default async function HomePage() {
             <p className="mt-10 text-ink/70">Aucune action publiée pour l&apos;instant.</p>
           ) : (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {cards.map((a) => <ActionCard key={a.id} {...a} />)}
+              {cards.map((a) => <ActionCard key={a.id} {...a} coverImage={isUpcoming(a.date) ? a.poster ?? a.coverImage : a.coverImage} />)}
             </div>
           )}
         </div>

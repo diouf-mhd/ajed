@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { InstallAppButton } from "@/components/ui/InstallAppButton";
 import { cn } from "@/lib/utils";
 
 export const NAV = [
@@ -49,7 +50,7 @@ export function Header() {
           <span className="hidden font-display text-xl font-bold text-forest sm:block">AJED</span>
         </Link>
 
-        <nav aria-label="Navigation principale" className="hidden items-center gap-6 xl:flex">
+        <nav aria-label="Navigation principale" className="hidden items-center gap-4 xl:flex">
           {NAV.map((n) => (
             <Link key={n.href} href={n.href} className="text-[15px] font-medium text-ink/80 hover:text-forest">
               {n.label}
@@ -58,6 +59,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <InstallAppButton />
           <Link href="/contact#rejoindre" className="btn-sun hidden !py-2.5 sm:inline-flex">
             Rejoindre l&apos;AJED
           </Link>
