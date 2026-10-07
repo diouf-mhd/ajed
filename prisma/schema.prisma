@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
+enum PhotoCategory {
+  NETTOYAGE
+  ENVIRONNEMENT
+  JEUNESSE
+  EVENEMENTS
+  AUTRES
+}
+
+// Compte administrateur (V1 : l'authentification utilise ADMIN_PASSWORD ; ce modèle prépare le multi-comptes)
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Action {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  title        String
+  summary      String
+  description  String
+  objectives   String?
+  results      String?
+  date         DateTime
+  time         String?
+  location     String
+  participants Int?
+  coverImage   String?
+  videoUrl     String?
+  featured     Boolean      @default(false)
+  status       Status       @default(DRAFT)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  photos       Photo[]
+  beforeAfter  BeforeAfter?
+
+  @@index([status, date])
+}
+
+// Photo = élément de la galerie (liée ou non à une action)
+model Photo {
+  id        String        @id @default(cuid())
+  url       String
+  title     String?
+  category  PhotoCategory @default(AUTRES)
+  date      DateTime      @default(now())
+  createdAt DateTime      @default(now())
+  actionId  String?
+  action    Action?       @relation(fields: [actionId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+}
+
+model BeforeAfter {
+  id        String   @id @default(cuid())
+  beforeUrl String
+  afterUrl  String
+  caption   String?
+  createdAt DateTime @default(now())
+  actionId  String   @unique
+  action    Action   @relation(fields: [actionId], references: [id], onDelete: Cascade)
+}
+
+model News {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  summary   String
+  content   String
+  image     String?
+  date      DateTime
+  status    Status   @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  date        DateTime
+  time        String?
+  location    String
+  description String
+  image       String?
+  status      Status   @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Statistic {
+  id     String @id @default(cuid())
+  label  String
+  value  Int    @default(0)
+  suffix String @default("")
+  order  Int    @default(0)
+}
+
+// Paramètres du site (contact, réseaux sociaux, image du hero...)
+model Setting {
+  key   String @id
+  value String
+}
+
+// Candidatures / messages envoyés depuis « Rejoindre l'AJED »
+model Application {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
