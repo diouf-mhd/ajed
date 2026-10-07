@@ -37,4 +37,10 @@ const dateFmt = new Intl.DateTimeFormat("fr-FR", {
 export const formatDate = (d: Date) => dateFmt.format(d);
 export const toInputDate = (d?: Date | null) => (d ? d.toISOString().slice(0, 10) : "");
 
+export function isUpcoming(date: Date, now = new Date()) {
+  const today = new Date(now);
+  today.setUTCHours(0, 0, 0, 0);
+  return date >= today;
+}
+
 export const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";

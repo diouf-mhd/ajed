@@ -5,9 +5,10 @@ import { CATEGORIES, categoryLabel, toInputDate } from "@/lib/utils";
 import { deletePhoto, uploadPhotos } from "./../server-actions";
 
 export default async function AdminGallery() {
-  const [photos, actions] = await Promise.all([
-    db.photo.findMany({ orderBy: { createdAt: "desc" }, include: { action: { select: { title: true } } }, take: 200 }),
+  const [photos, actions, quartiers] = await Promise.all([
+    db.photo.findMany({ orderBy: { createdAt: "desc" }, include: { action: { select: { title: true } }, quartier: true }, take: 200 }),
     db.action.findMany({ orderBy: { date: "desc" }, select: { id: true, title: true } }),
+    db.quartier.findMany({ orderBy: { order: "asc" }, select: { id: true, name: true } }),
   ]);
 
   return (
@@ -18,6 +19,7 @@ export default async function AdminGallery() {
         <div className="grid gap-4 sm:grid-cols-2">
           <Select label="Catégorie" name="category" options={[...CATEGORIES]} />
           <Select label="Action associée" name="actionId" options={[{ value: "", label: "Aucune" }, ...actions.map((a) => ({ value: a.id, label: a.title }))]} />
+          <Select label="Quartier associé (facultatif)" name="quartierId" options={[{ value: "", label: "Aucun" }, ...quartiers.map((quartier) => ({ value: quartier.id, label: quartier.name }))]} />
           <Field label="Date" name="date" type="date" defaultValue={toInputDate(new Date())} />
           <Field label="Titre (facultatif, si une seule photo)" name="title" />
         </div>
@@ -31,7 +33,7 @@ export default async function AdminGallery() {
             <img src={p.url} alt={p.title ?? ""} loading="lazy" className="aspect-square w-full object-cover" />
             <div className="space-y-2 p-3 text-sm">
               <p className="truncate font-semibold">{p.title ?? p.action?.title ?? "Sans titre"}</p>
-              <p className="text-ink/60">{categoryLabel(p.category)}</p>
+              <p className="text-ink/60">{categoryLabel(p.category)}{p.quartier ? ` · ${p.quartier.name}` : ""}</p>
               <form action={deletePhoto}><input type="hidden" name="id" value={p.id} /><DeleteButton confirmText="Supprimer cette photo ?" /></form>
             </div>
           </li>

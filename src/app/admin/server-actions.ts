@@ -71,16 +71,27 @@ export async function saveAction(formData: FormData) {
     time: opt(formData, "time"),
     location: str(formData, "location"),
     participants: int(formData, "participants"),
+    dayNumber: int(formData, "dayNumber"),
     videoUrl: opt(formData, "videoUrl"),
     featured: formData.get("featured") === "on",
     status: status(formData),
     coverImage: await image(formData, "cover", "coverImage"),
+    poster: await image(formData, "posterFile", "poster"),
   };
-  const action = id ? await db.action.update({ where: { id }, data }) : await db.action.create({ data });
+  const editionId = opt(formData, "editionId");
+  const quartierIds = formData.getAll("quartierIds").map(String);
+  const relationData = {
+    edition: editionId ? { connect: { id: editionId } } : { disconnect: true },
+    quartiers: { set: quartierIds.map((quartierId) => ({ id: quartierId })) },
+  };
+  const action = id
+    ? await db.action.update({ where: { id }, data: { ...data, ...relationData } })
+    : await db.action.create({ data: { ...data, edition: editionId ? { connect: { id: editionId } } : undefined, quartiers: { connect: quartierIds.map((quartierId) => ({ id: quartierId })) } } });
+  const photoQuartierId = opt(formData, "photoQuartierId");
 
   for (const file of files(formData, "photos")) {
     const url = await saveImage(file);
-    if (url) await db.photo.create({ data: { url, actionId: action.id, category: category(formData, "photoCategory"), date: action.date } });
+    if (url) await db.photo.create({ data: { url, actionId: action.id, quartierId: photoQuartierId && quartierIds.includes(photoQuartierId) ? photoQuartierId : null, category: category(formData, "photoCategory"), date: action.date } });
   }
 
   const beforeUrl = await image(formData, "before", "beforeUrl");
@@ -117,12 +128,13 @@ export async function uploadPhotos(formData: FormData) {
   await requireAdmin();
   const title = opt(formData, "title");
   const actionId = opt(formData, "actionId");
+  const quartierId = opt(formData, "quartierId");
   const list = files(formData, "files");
   for (const file of list) {
     const url = await saveImage(file);
     if (url) {
       await db.photo.create({
-        data: { url, title: list.length === 1 ? title : null, actionId, category: category(formData), date: day(formData, "date") },
+        data: { url, title: list.length === 1 ? title : null, actionId, quartierId, category: category(formData), date: day(formData, "date") },
       });
     }
   }

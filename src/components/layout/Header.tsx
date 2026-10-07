@@ -10,6 +10,7 @@ export const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/#mission", label: "Notre mission" },
   { href: "/actions", label: "Nos actions" },
+  { href: "/quartiers", label: "Quartiers" },
   { href: "/#realisations", label: "Réalisations" },
   { href: "/galerie", label: "Galerie" },
   { href: "/actualites", label: "Actualités" },

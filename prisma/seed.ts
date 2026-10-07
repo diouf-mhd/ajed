@@ -1,6 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import { slugify } from "../src/lib/utils";
 
 const db = new PrismaClient();
+
+const quartierNames = [
+  "Aithia", "Poutou", "Dabathie", "Yam", "Mbouka", "Loss", "Lossa", "Gola",
+  "Kahane Fall", "Dougar Peulh", "Santhia",
+];
 
 async function main() {
   if ((await db.statistic.count()) === 0) {
@@ -10,9 +16,28 @@ async function main() {
         { label: "Bénévoles mobilisés", value: 0, suffix: "", order: 2 },
         { label: "Zones nettoyées", value: 0, suffix: "", order: 3 },
         { label: "Projets réalisés", value: 0, suffix: "", order: 4 },
+        { label: "Quartiers couverts", value: 11, suffix: "", order: 5 },
       ],
     });
   }
+  if (!(await db.statistic.findFirst({ where: { label: "Quartiers couverts" } }))) {
+    const last = await db.statistic.findFirst({ orderBy: { order: "desc" } });
+    await db.statistic.create({ data: { label: "Quartiers couverts", value: 11, suffix: "", order: (last?.order ?? 0) + 1 } });
+  }
+
+  for (const [index, name] of quartierNames.entries()) {
+    const slug = slugify(name);
+    await db.quartier.upsert({
+      where: { slug },
+      update: { name, order: index + 1 },
+      create: { name, slug, order: index + 1 },
+    });
+  }
+  await db.edition.upsert({
+    where: { number: 3 },
+    update: { title: "3e édition" },
+    create: { number: 3, title: "3e édition" },
+  });
 
   const defaults: Record<string, string> = {
     phone: "",
@@ -26,23 +51,6 @@ async function main() {
     await db.setting.upsert({ where: { key }, update: {}, create: { key, value } });
   }
 
-  // Exemple d'action pour prévisualiser le site (à supprimer depuis /admin)
-  await db.action.upsert({
-    where: { slug: "nettoyage-mosquee-dougar" },
-    update: {},
-    create: {
-      slug: "nettoyage-mosquee-dougar",
-      title: "Nettoyage de la mosquée de Dougar",
-      summary: "Ensemble pour un environnement plus propre.",
-      description:
-        "Les jeunes de l'AJED se retrouvent pour nettoyer la mosquée et ses abords.\n\nVenez avec vos gants et votre bonne humeur.",
-      objectives: "Rendre les abords de la mosquée propres.\nSensibiliser les habitants à la propreté.",
-      date: new Date("2026-10-11T12:00:00Z"),
-      time: "09h00",
-      location: "Mosquée de Dougar",
-      status: "PUBLISHED",
-    },
-  });
 }
 
 main().finally(() => db.$disconnect());

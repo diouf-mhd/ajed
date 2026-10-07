@@ -9,8 +9,8 @@ import { NewsCard } from "@/components/site/NewsCard";
 import { JoinSection } from "@/components/site/JoinSection";
 import { ContactInfo } from "@/components/site/ContactInfo";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { getBeforeAfters, getFeaturedActions, getLatestActions, getNews, getPhotos, getSettings, getStats, getUpcomingEvents } from "@/lib/data";
-import { formatDate } from "@/lib/utils";
+import { getBeforeAfters, getEditions, getFeaturedActions, getLatestActions, getNews, getPhotos, getQuartiers, getSettings, getStats, getUpcomingEvents } from "@/lib/data";
+import { formatDate, isUpcoming } from "@/lib/utils";
 
 const MISSION = [
   { emoji: "🌱", title: "Environnement", text: "Nettoyer, planter, sensibiliser : rendre Dougar plus propre, un quartier après l'autre.", cls: "bg-forest text-white" },
@@ -20,7 +20,7 @@ const MISSION = [
 ];
 
 export default async function HomePage() {
-  const [latest, cards, beforeAfters, stats, featured, photos, news, events, settings] = await Promise.all([
+  const [latest, cards, beforeAfters, stats, featured, photos, news, events, settings, editions, quartiers] = await Promise.all([
     getLatestActions(5),
     getLatestActions(6),
     getBeforeAfters(3),
@@ -30,6 +30,8 @@ export default async function HomePage() {
     getNews(3),
     getUpcomingEvents(3),
     getSettings(),
+    getEditions(),
+    getQuartiers(),
   ]);
 
   const slides = latest.map((a) => ({
@@ -59,6 +61,46 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {editions[0] && (
+        <section id="edition" className="section bg-chalk">
+          <div className="wrap">
+            <SectionTitle title={`${editions[0].title} à Dougar`} intro="Une édition, plusieurs journées, des quartiers mobilisés." />
+            <ol className="mt-10 grid gap-4 md:grid-cols-3">
+              {editions[0].actions.map((action) => {
+                const upcoming = isUpcoming(action.date);
+                return (
+                  <li key={action.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
+                    {upcoming && action.poster && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={action.poster} alt={`Affiche : ${action.title}`} className="aspect-[4/3] w-full object-cover" />
+                    )}
+                    <div className="p-6">
+                      <p className="text-sm font-bold uppercase text-leaf">Journée {action.dayNumber ?? ""} · {upcoming ? "À venir" : "Terminée"}</p>
+                      <h3 className="mt-2 text-xl font-bold text-forest">{action.title}</h3>
+                      <p className="mt-2 text-sm text-ink/70">{formatDate(action.date)} · {action.quartiers.map((quartier) => quartier.name).join(", ") || action.location}</p>
+                      <Link href={`/actions/${action.slug}`} className="btn-line mt-5 !px-4 !py-2 text-sm">Détails</Link>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            <div className="mt-10">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div><h3 className="text-2xl font-bold text-forest">Les quartiers de Dougar</h3><p className="mt-1 text-ink/70">Suivez les journées organisées dans chaque quartier.</p></div>
+                <Link href="/quartiers" className="btn-forest">Voir les quartiers</Link>
+              </div>
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {quartiers.map((quartier) => (
+                  <li key={quartier.id}><Link href={`/quartiers/${quartier.slug}`} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-forest ring-1 ring-black/10 hover:ring-forest">
+                    {quartier.name}<span className="text-xs text-ink/55">{quartier.status === "DONE" ? "Terminée" : quartier.status === "UPCOMING" ? "À venir" : "À suivre"}</span>
+                  </Link></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section id="actions" className="section bg-chalk">
         <div className="wrap">

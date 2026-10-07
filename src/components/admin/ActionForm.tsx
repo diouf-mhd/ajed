@@ -1,10 +1,12 @@
-import type { Action, BeforeAfter } from "@prisma/client";
+import type { Action, BeforeAfter, Edition, Quartier } from "@prisma/client";
 import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
 import { DeleteButton, SubmitButton } from "./ui";
 import { CATEGORIES, toInputDate } from "@/lib/utils";
 import { deleteAction, deleteBeforeAfter, saveAction } from "@/app/admin/server-actions";
 
-export function ActionForm({ action }: { action?: (Action & { beforeAfter: BeforeAfter | null }) | null }) {
+type FormAction = Action & { beforeAfter: BeforeAfter | null; quartiers: Quartier[] };
+
+export function ActionForm({ action, editions, quartiers }: { action?: FormAction | null; editions: Edition[]; quartiers: Quartier[] }) {
   return (
     <>
       <form action={saveAction} className="max-w-3xl space-y-5 rounded-3xl bg-white p-6 ring-1 ring-black/10 sm:p-8">
@@ -17,6 +19,21 @@ export function ActionForm({ action }: { action?: (Action & { beforeAfter: Befor
           <Field label="Heure" name="time" placeholder="09h00" defaultValue={action?.time ?? ""} />
           <Field label="Participants" name="participants" type="number" min={0} defaultValue={action?.participants ?? ""} />
         </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Select label="Édition" name="editionId" options={[{ value: "", label: "Aucune" }, ...editions.map((edition) => ({ value: edition.id, label: edition.title }))]} defaultValue={action?.editionId ?? ""} />
+          <Field label="Numéro de la journée" name="dayNumber" type="number" min={1} defaultValue={action?.dayNumber ?? ""} />
+        </div>
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-semibold">Quartier(s) concerné(s)</legend>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {quartiers.map((quartier) => (
+              <label key={quartier.id} className="flex items-center gap-3 rounded-xl bg-chalk px-4 py-3 text-sm">
+                <input type="checkbox" name="quartierIds" value={quartier.id} defaultChecked={action?.quartiers.some((item) => item.id === quartier.id)} className="h-4 w-4 accent-forest" />
+                {quartier.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <Field label="Lieu" name="location" required defaultValue={action?.location} />
         <TextArea label="Description" name="description" rows={6} required defaultValue={action?.description} />
         <TextArea label="Objectifs" name="objectives" defaultValue={action?.objectives ?? ""} />
@@ -24,11 +41,13 @@ export function ActionForm({ action }: { action?: (Action & { beforeAfter: Befor
         <Field label="Lien vidéo (facultatif)" name="videoUrl" type="url" defaultValue={action?.videoUrl ?? ""} />
 
         <ImageField label="Image principale" name="cover" keepName="coverImage" current={action?.coverImage} />
+        <ImageField label="Affiche d'annonce" name="posterFile" keepName="poster" current={action?.poster} />
 
         <fieldset className="space-y-3 rounded-2xl bg-chalk p-4">
           <legend className="px-2 text-sm font-bold">Photos de l&apos;action</legend>
           <input type="file" name="photos" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="block w-full text-sm" />
           <Select label="Catégorie de ces photos" name="photoCategory" options={[...CATEGORIES]} defaultValue="NETTOYAGE" />
+          <Select label="Quartier associé (facultatif)" name="photoQuartierId" options={[{ value: "", label: "Tous les quartiers de cette journée" }, ...quartiers.map((quartier) => ({ value: quartier.id, label: quartier.name }))]} />
           <p className="text-xs text-ink/60">Les photos ajoutées apparaissent aussi dans la galerie (gérez-les ensuite dans « Galerie »).</p>
         </fieldset>
 
