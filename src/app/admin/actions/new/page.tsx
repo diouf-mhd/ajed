@@ -7,5 +7,5 @@ export default async function NewAction() {
     db.edition.findMany({ orderBy: { number: "desc" } }),
     db.quartier.findMany({ orderBy: { order: "asc" } }),
   ]);
-  return (<><PageHeader title="Nouvelle action" /><ActionForm editions={editions} quartiers={quartiers} /></>);
+  return (<><PageHeader title="Nouvelle action" /><ActionForm editions={editions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} /></>);
 }

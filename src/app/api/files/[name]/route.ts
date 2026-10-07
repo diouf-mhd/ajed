@@ -7,11 +7,14 @@ const TYPES: Record<string, string> = {
   png: "image/png",
   webp: "image/webp",
   gif: "image/gif",
+  mp4: "video/mp4",
+  webm: "video/webm",
+  mov: "video/quicktime",
 };
 
 export async function GET(_req: Request, { params }: { params: Promise<{ name: string }> }) {
   const { name } = await params;
-  if (!/^[\w-]+\.(jpg|png|webp|gif)$/.test(name)) return new Response("Not found", { status: 404 });
+  if (!/^[\w-]+\.(jpg|png|webp|gif|mp4|webm|mov)$/.test(name)) return new Response("Not found", { status: 404 });
   try {
     const file = await readFile(path.join(UPLOAD_DIR, name));
     return new Response(file, {

@@ -11,5 +11,5 @@ export default async function EditAction({ params }: { params: Promise<{ id: str
     db.quartier.findMany({ orderBy: { order: "asc" } }),
   ]);
   if (!action) notFound();
-  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} /></>);
+  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} /></>);
 }

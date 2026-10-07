@@ -6,7 +6,7 @@ import type { PhotoCategory } from "@prisma/client";
 import { checkPassword, createSession, destroySession, requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { SETTING_KEYS } from "@/lib/data";
-import { saveImage } from "@/lib/storage";
+import { saveImage, saveVideo } from "@/lib/storage";
 import { CATEGORIES, slugify } from "@/lib/utils";
 
 // ---------- helpers ----------
@@ -59,6 +59,10 @@ export async function saveAction(formData: FormData) {
   await requireAdmin();
   const id = opt(formData, "id");
   const title = str(formData, "title");
+  const videoFile = formData.get("videoFile");
+  const videoUrl = videoFile instanceof File && videoFile.size > 0
+    ? await saveVideo(videoFile)
+    : opt(formData, "videoUrl");
 
   const data = {
     title,
@@ -72,7 +76,7 @@ export async function saveAction(formData: FormData) {
     location: str(formData, "location"),
     participants: int(formData, "participants"),
     dayNumber: int(formData, "dayNumber"),
-    videoUrl: opt(formData, "videoUrl"),
+    videoUrl,
     featured: formData.get("featured") === "on",
     status: status(formData),
     coverImage: await image(formData, "cover", "coverImage"),

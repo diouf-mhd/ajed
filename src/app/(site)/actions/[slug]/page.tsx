@@ -59,12 +59,20 @@ export default async function ActionPage({ params }: Props) {
         <Block title="Objectifs" text={a.objectives} />
         <Block title="Résultats" text={a.results} />
 
-        {a.videoUrl && (
+        {a.videoUrl && /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(a.videoUrl) ? (
+          <section className="mt-10">
+            <h2 className="text-2xl font-bold text-forest">Vidéo</h2>
+            <video controls playsInline preload="metadata" className="mt-3 w-full rounded-2xl bg-black">
+              <source src={a.videoUrl} />
+              Votre navigateur ne prend pas en charge la lecture de cette vidéo.
+            </video>
+          </section>
+        ) : a.videoUrl ? (
           <section className="mt-10">
             <h2 className="text-2xl font-bold text-forest">Vidéo</h2>
             <a href={a.videoUrl} target="_blank" rel="noopener noreferrer" className="btn-line mt-3">Regarder la vidéo</a>
           </section>
-        )}
+        ) : null}
 
         {a.beforeAfter && (
           <section className="mt-12">

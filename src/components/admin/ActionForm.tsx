@@ -1,12 +1,13 @@
 import type { Action, BeforeAfter, Edition, Quartier } from "@prisma/client";
 import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
+import { VideoUploadField } from "./VideoUploadField";
 import { DeleteButton, SubmitButton } from "./ui";
 import { toInputDate } from "@/lib/utils";
 import { deleteAction, deleteBeforeAfter, saveAction } from "@/app/admin/server-actions";
 
 type FormAction = Action & { beforeAfter: BeforeAfter | null; quartiers: Quartier[] };
 
-export function ActionForm({ action, editions, quartiers }: { action?: FormAction | null; editions: Edition[]; quartiers: Quartier[] }) {
+export function ActionForm({ action, editions, quartiers, directUploads }: { action?: FormAction | null; editions: Edition[]; quartiers: Quartier[]; directUploads: boolean }) {
   return (
     <>
       <form action={saveAction} className="max-w-3xl space-y-5 rounded-3xl bg-white p-6 ring-1 ring-black/10 sm:p-8">
@@ -46,7 +47,7 @@ export function ActionForm({ action, editions, quartiers }: { action?: FormActio
             <TextArea label="Description détaillée (facultatif)" name="description" rows={5} defaultValue={action?.description} />
             <TextArea label="Objectifs" name="objectives" defaultValue={action?.objectives ?? ""} />
             <TextArea label="Résultats" name="results" defaultValue={action?.results ?? ""} />
-            <Field label="Lien vidéo" name="videoUrl" type="url" defaultValue={action?.videoUrl ?? ""} />
+            <VideoUploadField current={action?.videoUrl} directUploads={directUploads} />
             <ImageField label="Image principale" name="cover" keepName="coverImage" current={action?.coverImage} />
             <ImageField label="Affiche d'annonce" name="posterFile" keepName="poster" current={action?.poster} />
             <p className="text-sm text-ink/65">Après création, ajoutez les photos de la journée depuis la Galerie en associant cette action.</p>
