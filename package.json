@@ -12,9 +12,12 @@
     "db:seed": "tsx prisma/seed.ts",
     "typecheck": "tsc --noEmit"
   },
-  "prisma": { "seed": "tsx prisma/seed.ts" },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.1.0",
+    "@vercel/blob": "^2.8.1",
     "clsx": "^2.1.1",
     "jose": "^5.9.6",
     "lucide-react": "^0.468.0",
