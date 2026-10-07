@@ -62,7 +62,11 @@ export default async function HomePage() {
             <ul className="mt-8 grid gap-4 md:grid-cols-3">
               {events.map((event) => (
                 <li key={event.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
-                  <Img src={event.image} alt={event.title} className="aspect-[16/9] w-full bg-forest" />
+                  {event.image ? (
+                    <Img src={event.image} alt={event.title} fit="contain" className="h-auto max-h-[32rem] w-full bg-chalk" />
+                  ) : (
+                    <Img src={null} alt={event.title} className="aspect-[16/9] w-full bg-forest" />
+                  )}
                   <div className="p-5">
                     <p className="font-semibold text-leaf">{formatDate(event.date)}{event.time ? ` · ${event.time}` : ""}</p>
                     <h3 className="mt-2 text-xl font-bold text-forest">{event.title}</h3>
@@ -85,8 +89,7 @@ export default async function HomePage() {
                 return (
                   <li key={action.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
                     {upcoming && action.poster && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={action.poster} alt={`Affiche : ${action.title}`} className="aspect-[4/3] w-full object-cover" />
+                      <Img src={action.poster} alt={`Affiche : ${action.title}`} fit="contain" className="h-auto max-h-[32rem] w-full bg-chalk" />
                     )}
                     <div className="p-6">
                       <p className="text-sm font-bold uppercase text-leaf">Journée {action.dayNumber ?? ""} · {upcoming ? "À venir" : "Terminée"}</p>

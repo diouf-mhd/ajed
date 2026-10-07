@@ -6,11 +6,13 @@ export function Img({
   alt,
   className,
   priority = false,
+  fit = "cover",
 }: {
   src?: string | null;
   alt: string;
   className?: string;
   priority?: boolean;
+  fit?: "cover" | "contain";
 }) {
   if (!src) {
     return (
@@ -28,7 +30,7 @@ export function Img({
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
-      className={cn("object-cover", className)}
+      className={cn(fit === "contain" ? "object-contain" : "object-cover", className)}
     />
   );
 }

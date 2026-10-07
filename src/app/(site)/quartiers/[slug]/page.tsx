@@ -35,7 +35,7 @@ export default async function QuartierPage({ params }: Props) {
             return (
               <li key={action.id} className="border-t border-black/10 pt-8">
                 <article>
-                  {upcoming && action.poster && <Img src={action.poster} alt={`Affiche : ${action.title}`} className="mb-6 max-h-[32rem] w-full rounded-2xl bg-chalk" />}
+                  {upcoming && action.poster && <Img src={action.poster} alt={`Affiche : ${action.title}`} fit="contain" className="mb-6 h-auto max-h-[32rem] w-full rounded-2xl bg-chalk" />}
                   <p className="text-sm font-bold uppercase text-leaf">
                     {action.edition?.title ? `${action.edition.title} · ` : ""}Journée {action.dayNumber ?? ""} · {upcoming ? "À venir" : "Terminée"}
                   </p>
