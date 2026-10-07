@@ -57,7 +57,10 @@ export async function Footer() {
 
       <div className="border-t border-white/10">
         <div className="wrap flex flex-col gap-2 py-5 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 AJED — Tous droits réservés.</p>
+          <p>
+            © 2026 AJED — Tous droits réservés. <span aria-hidden="true">·</span>{" "}
+            <Link href="/admin/login" className="text-white/45 underline-offset-4 hover:text-white/80 hover:underline">Administration</Link>
+          </p>
           <p>
             Site développé par{" "}
             <a href="https://moussadioufportfolio.kesug.com" target="_blank" rel="noopener noreferrer" className="font-medium text-white/80 underline-offset-4 hover:underline">
