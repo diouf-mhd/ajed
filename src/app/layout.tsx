@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/utils";
 import "./globals.css";
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: { default: SITE_NAME, template: "%s | AJED" },
   description: SITE_DESCRIPTION,
-  icons: { icon: "/logo-ajed.png", apple: "/logo-ajed.png" },
+  icons: { icon: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }, { url: "/icon-512.png", sizes: "512x512", type: "image/png" }], apple: "/icon-192.png" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "AJED" },
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: SITE_NAME, description: SITE_DESCRIPTION },
 };
+
+export const viewport: Viewport = { themeColor: "#0B4A2C" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
