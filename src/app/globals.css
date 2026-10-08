@@ -11,6 +11,17 @@
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal-enabled .scroll-reveal {
+      opacity: 0;
+      transform: translateY(1.25rem);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .scroll-reveal-enabled .scroll-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer components {

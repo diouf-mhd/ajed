@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ScrollReveal } from "@/components/site/ScrollReveal";
 
 // Le contenu public vient de la base : on l'évalue à chaque requête (une action publiée apparaît tout de suite).
 export const dynamic = "force-dynamic";
@@ -11,7 +12,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         Aller au contenu
       </a>
       <Header />
-      <main id="contenu">{children}</main>
+      <main id="contenu">
+        <ScrollReveal />
+        {children}
+      </main>
       <Footer />
     </>
   );
