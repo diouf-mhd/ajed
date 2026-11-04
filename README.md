@@ -27,19 +27,12 @@ Le même fichier sert d'icône du site et d'image Open Graph.
 - Session = cookie `httpOnly` signé (JWT, clé `AUTH_SECRET`) ; `/admin/*` est protégé par le middleware **et** chaque action serveur revérifie la session.
 - En production : changez `ADMIN_PASSWORD` et générez un nouvel `AUTH_SECRET` (`openssl rand -hex 32`). Ne versionnez pas `.env`.
 
-## Images et vidéos
+## Images
 
-En local, les médias sont stockés sur disque (`UPLOAD_DIR`, servis par `/api/files/`).
-En production sur Vercel, configurez Cloudflare R2 avec les variables `R2_ACCOUNT_ID`,
-`R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` et `R2_PUBLIC_URL`.
-Le bucket doit être public pour servir les médias; les téléversements passent par des URL
-présignées de courte durée et ne révèlent pas les clés R2 au navigateur.
-
-Pour les téléversements directs depuis le navigateur, ajoutez une règle CORS au bucket avec
-les origines `https://ajed.vercel.app` et `http://localhost:3000`, les méthodes `GET`, `HEAD`
-et `PUT`, et l’en-tête autorisé `Content-Type`. Conservez la classe de stockage Standard.
-Le sous-domaine public `r2.dev` convient pour démarrer, mais Cloudflare le réserve aux usages
-non-production et le limite; un domaine personnalisé Cloudflare est recommandé pour le site en production.
+Par défaut, les images sont stockées sur disque (`UPLOAD_DIR`, servies par `/api/files/…`) :
+parfait pour un VPS/Docker avec volume persistant. Sur un hébergeur serverless (Vercel…),
+remplacez le corps de `saveImage()` dans `src/lib/storage.ts` par Vercel Blob, S3 ou Cloudinary
+(le reste du code ne manipule que l'URL retournée).
 
 ## Structure
 

@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { PageHeader } from "@/components/admin/fields";
 import { db } from "@/lib/db";
-import { isR2Configured } from "@/lib/r2";
 
 export default async function EditAction({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
@@ -12,5 +11,5 @@ export default async function EditAction({ params }: { params: Promise<{ id: str
     db.quartier.findMany({ orderBy: { order: "asc" } }),
   ]);
   if (!action) notFound();
-  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} directUploads={isR2Configured()} /></>);
+  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} /></>);
 }

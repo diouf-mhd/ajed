@@ -38,6 +38,21 @@ export const STATUS_OPTIONS = [
   { value: "PUBLISHED", label: "Publié" },
 ];
 
+/** Champ image : aperçu de l'existante (champ caché) + nouveau fichier. */
+export function ImageField({ label, name, keepName, current }: { label: string; name: string; keepName: string; current?: string | null }) {
+  return (
+    <div className="text-sm font-semibold">
+      <p>{label}</p>
+      {current && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={current} alt="" className="mt-2 h-28 w-auto rounded-xl object-cover" />
+      )}
+      <input type="hidden" name={keepName} defaultValue={current ?? ""} />
+      <input type="file" name={name} accept="image/jpeg,image/png,image/webp,image/gif" className="mt-2 block w-full text-sm font-normal file:mr-3 file:rounded-full file:border-0 file:bg-sun file:px-4 file:py-2 file:font-semibold" />
+    </div>
+  );
+}
+
 export function StatusBadge({ status }: { status: string }) {
   const pub = status === "PUBLISHED";
   return (

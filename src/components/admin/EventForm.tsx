@@ -1,11 +1,10 @@
 import type { Event } from "@prisma/client";
-import { Field, Select, STATUS_OPTIONS, TextArea } from "./fields";
-import { ImageField } from "./ImageField";
+import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
 import { DeleteButton, SubmitButton } from "./ui";
 import { toInputDate } from "@/lib/utils";
 import { deleteEvent, saveEvent } from "@/app/admin/server-actions";
 
-export function EventForm({ event, directUploads }: { event?: Event | null; directUploads: boolean }) {
+export function EventForm({ event }: { event?: Event | null }) {
   return (
     <>
       <form action={saveEvent} className="max-w-3xl space-y-5 rounded-3xl bg-white p-6 ring-1 ring-black/10 sm:p-8">
@@ -19,7 +18,7 @@ export function EventForm({ event, directUploads }: { event?: Event | null; dire
           <summary className="cursor-pointer font-semibold text-forest">Options complémentaires</summary>
           <div className="mt-4 space-y-5">
             <Field label="Heure" name="time" placeholder="09h00" defaultValue={event?.time ?? ""} />
-            <ImageField label="Image" name="imageFile" keepName="image" current={event?.image} directUploads={directUploads} />
+            <ImageField label="Image" name="imageFile" keepName="image" current={event?.image} />
           </div>
         </details>
         <SubmitButton>{event ? "Enregistrer" : "Créer l'événement"}</SubmitButton>

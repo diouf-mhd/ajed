@@ -2,7 +2,6 @@ import { DeleteButton } from "@/components/admin/ui";
 import { PageHeader } from "@/components/admin/fields";
 import { GalleryUploadForm } from "@/components/admin/GalleryUploadForm";
 import { db } from "@/lib/db";
-import { isR2Configured } from "@/lib/r2";
 import { categoryLabel } from "@/lib/utils";
 import { deletePhoto } from "./../server-actions";
 
@@ -16,7 +15,7 @@ export default async function AdminGallery() {
   return (
     <div className="max-w-5xl">
       <PageHeader title="Galerie" />
-      <GalleryUploadForm actions={actions} quartiers={quartiers} directUploads={isR2Configured()} />
+      <GalleryUploadForm actions={actions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} />
 
       <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {photos.map((p) => (

@@ -159,9 +159,7 @@ export async function saveUploadedPhotos(input: {
 
   const urls = input.urls.map((value) => {
     const url = new URL(value);
-    const r2Host = process.env.R2_PUBLIC_URL ? new URL(process.env.R2_PUBLIC_URL).host : null;
-    const isLegacyBlob = url.hostname.endsWith(".public.blob.vercel-storage.com");
-    if (url.protocol !== "https:" || (!isLegacyBlob && url.host !== r2Host)) {
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".public.blob.vercel-storage.com")) {
       throw new Error("URL de photo invalide.");
     }
     return url.toString();

@@ -1,9 +1,7 @@
-import { Field, PageHeader } from "@/components/admin/fields";
-import { ImageField } from "@/components/admin/ImageField";
+import { ImageField, Field, PageHeader } from "@/components/admin/fields";
 import { SubmitButton } from "@/components/admin/ui";
 import { getSettings } from "@/lib/data";
 import { saveSettings } from "../server-actions";
-import { isR2Configured } from "@/lib/r2";
 
 export default async function AdminSettings() {
   const s = await getSettings();
@@ -11,7 +9,7 @@ export default async function AdminSettings() {
     <div className="max-w-2xl">
       <PageHeader title="Paramètres" />
       <form action={saveSettings} className="space-y-5 rounded-3xl bg-white p-6 ring-1 ring-black/10 sm:p-8">
-        <ImageField label="Photo du hero (page d'accueil)" name="heroFile" keepName="heroImage" current={s.heroImage} directUploads={isR2Configured()} />
+        <ImageField label="Photo du hero (page d'accueil)" name="heroFile" keepName="heroImage" current={s.heroImage} />
         <Field label="Téléphone" name="phone" type="tel" defaultValue={s.phone} />
         <Field label="Email" name="email" type="email" defaultValue={s.email} />
         <Field label="WhatsApp (avec indicatif)" name="whatsapp" defaultValue={s.whatsapp} placeholder="+221 77 000 00 00" />

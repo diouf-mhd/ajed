@@ -1,6 +1,5 @@
 import type { Action, BeforeAfter, Edition, Quartier } from "@prisma/client";
-import { Field, Select, STATUS_OPTIONS, TextArea } from "./fields";
-import { ImageField } from "./ImageField";
+import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
 import { VideoUploadField } from "./VideoUploadField";
 import { DeleteButton, SubmitButton } from "./ui";
 import { toInputDate } from "@/lib/utils";
@@ -49,13 +48,13 @@ export function ActionForm({ action, editions, quartiers, directUploads }: { act
             <TextArea label="Objectifs" name="objectives" defaultValue={action?.objectives ?? ""} />
             <TextArea label="Résultats" name="results" defaultValue={action?.results ?? ""} />
             <VideoUploadField current={action?.videoUrl} directUploads={directUploads} />
-            <ImageField label="Image principale" name="cover" keepName="coverImage" current={action?.coverImage} directUploads={directUploads} />
-            <ImageField label="Affiche d'annonce" name="posterFile" keepName="poster" current={action?.poster} directUploads={directUploads} />
+            <ImageField label="Image principale" name="cover" keepName="coverImage" current={action?.coverImage} />
+            <ImageField label="Affiche d'annonce" name="posterFile" keepName="poster" current={action?.poster} />
             <p className="text-sm text-ink/65">Après création, ajoutez les photos de la journée depuis la Galerie en associant cette action.</p>
             <fieldset className="space-y-3 rounded-xl bg-white p-4">
               <legend className="px-2 text-sm font-bold">Avant / Après</legend>
-              <ImageField label="Image AVANT" name="before" keepName="beforeUrl" current={action?.beforeAfter?.beforeUrl} directUploads={directUploads} />
-              <ImageField label="Image APRÈS" name="after" keepName="afterUrl" current={action?.beforeAfter?.afterUrl} directUploads={directUploads} />
+              <ImageField label="Image AVANT" name="before" keepName="beforeUrl" current={action?.beforeAfter?.beforeUrl} />
+              <ImageField label="Image APRÈS" name="after" keepName="afterUrl" current={action?.beforeAfter?.afterUrl} />
               <Field label="Légende" name="baCaption" defaultValue={action?.beforeAfter?.caption ?? ""} />
             </fieldset>
             <div className="grid gap-4 sm:grid-cols-2">
