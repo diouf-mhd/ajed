@@ -1,10 +1,11 @@
 import type { News } from "@prisma/client";
-import { Field, ImageField, Select, STATUS_OPTIONS, TextArea } from "./fields";
+import { Field, Select, STATUS_OPTIONS, TextArea } from "./fields";
+import { ImageField } from "./ImageField";
 import { DeleteButton, SubmitButton } from "./ui";
 import { toInputDate } from "@/lib/utils";
 import { deleteNews, saveNews } from "@/app/admin/server-actions";
 
-export function NewsForm({ news }: { news?: News | null }) {
+export function NewsForm({ news, directUploads }: { news?: News | null; directUploads: boolean }) {
   return (
     <>
       <form action={saveNews} className="max-w-3xl space-y-5 rounded-3xl bg-white p-6 ring-1 ring-black/10 sm:p-8">
@@ -20,7 +21,7 @@ export function NewsForm({ news }: { news?: News | null }) {
           <summary className="cursor-pointer font-semibold text-forest">Options complémentaires</summary>
           <div className="mt-4 space-y-5">
             <Field label="Adresse (slug)" name="slug" defaultValue={news?.slug} hint="Laissez vide pour la générer depuis le titre." />
-            <ImageField label="Image" name="imageFile" keepName="image" current={news?.image} />
+            <ImageField label="Image" name="imageFile" keepName="image" current={news?.image} directUploads={directUploads} />
           </div>
         </details>
         <SubmitButton>{news ? "Enregistrer" : "Créer l'actualité"}</SubmitButton>

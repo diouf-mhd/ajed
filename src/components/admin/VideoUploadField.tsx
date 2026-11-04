@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { uploadMediaToR2 } from "@/lib/r2-client";
 
 const VIDEO_TYPES: Record<string, string> = {
   "video/mp4": "mp4",
@@ -33,14 +33,7 @@ export function VideoUploadField({ current, directUploads }: { current?: string 
     setProgress(0);
     setError("");
     try {
-      const blob = await upload(`ajed/${crypto.randomUUID()}.${extension}`, file, {
-        access: "public",
-        contentType: file.type,
-        handleUploadUrl: "/api/blob",
-        multipart: file.size > 5 * 1024 * 1024,
-        onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
-      });
-      setUrl(blob.url);
+      setUrl(await uploadMediaToR2(file, setProgress));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Échec de l'envoi de la vidéo.");
     } finally {

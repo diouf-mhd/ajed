@@ -2,10 +2,10 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { upload } from "@vercel/blob/client";
 import { Field, Select } from "@/components/admin/fields";
 import { DropZone, SubmitButton } from "@/components/admin/ui";
 import { CATEGORIES, toInputDate } from "@/lib/utils";
+import { uploadMediaToR2 } from "@/lib/r2-client";
 import { saveUploadedPhotos, uploadPhotos } from "@/app/admin/server-actions";
 
 export function GalleryUploadForm({ actions, quartiers, directUploads }: { actions: { id: string; title: string }[]; quartiers: { id: string; name: string }[]; directUploads: boolean }) {
@@ -28,14 +28,7 @@ export function GalleryUploadForm({ actions, quartiers, directUploads }: { actio
     try {
       for (const [index, file] of files.entries()) {
         setStatus(`Envoi ${index + 1}/${files.length} : ${file.name}`);
-        const pathname = `ajed/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-        const blob = await upload(pathname, file, {
-          access: "public",
-          contentType: file.type,
-          handleUploadUrl: "/api/blob",
-          multipart: file.size > 5 * 1024 * 1024,
-        });
-        urls.push(blob.url);
+        urls.push(await uploadMediaToR2(file));
       }
 
       setStatus("Enregistrement des photos…");
