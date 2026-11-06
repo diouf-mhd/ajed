@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/cdn";
 
 /** Image avec repli visuel (dégradé vert) quand aucune photo n'est définie. */
 export function Img({
@@ -26,7 +27,7 @@ export function Img({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={src}
+      src={optimizeImage(src)}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       decoding="async"

@@ -4,6 +4,8 @@ import { GalleryUploadForm } from "@/components/admin/GalleryUploadForm";
 import { db } from "@/lib/db";
 import { categoryLabel } from "@/lib/utils";
 import { deletePhoto } from "./../server-actions";
+import { optimizeImage } from "@/lib/cdn";
+import { getCloudinaryConfig } from "@/lib/storage";
 
 export default async function AdminGallery() {
   const [photos, actions, quartiers] = await Promise.all([
@@ -15,13 +17,13 @@ export default async function AdminGallery() {
   return (
     <div className="max-w-5xl">
       <PageHeader title="Galerie" />
-      <GalleryUploadForm actions={actions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} />
+      <GalleryUploadForm actions={actions} quartiers={quartiers} directUploads={Boolean(getCloudinaryConfig())} />
 
       <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {photos.map((p) => (
           <li key={p.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.url} alt={p.title ?? ""} loading="lazy" className="aspect-square w-full object-cover" />
+            <img src={optimizeImage(p.url, 400)} alt={p.title ?? ""} loading="lazy" className="aspect-square w-full object-cover" />
             <div className="space-y-2 p-3 text-sm">
               <p className="truncate font-semibold">{p.title ?? p.action?.title ?? "Sans titre"}</p>
               <p className="text-ink/60">{categoryLabel(p.category)}{p.quartier ? ` · ${p.quartier.name}` : ""}</p>

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { PageHeader } from "@/components/admin/fields";
 import { db } from "@/lib/db";
+import { getCloudinaryConfig } from "@/lib/storage";
 
 export default async function EditAction({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
@@ -11,5 +12,5 @@ export default async function EditAction({ params }: { params: Promise<{ id: str
     db.quartier.findMany({ orderBy: { order: "asc" } }),
   ]);
   if (!action) notFound();
-  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} directUploads={Boolean(process.env.VERCEL)} /></>);
+  return (<><PageHeader title="Modifier l'action" /><ActionForm action={action} editions={editions} quartiers={quartiers} directUploads={Boolean(getCloudinaryConfig())} /></>);
 }

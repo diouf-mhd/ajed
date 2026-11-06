@@ -2,14 +2,19 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-import { put } from "@vercel/blob";
+import { uploadToCloudinary, type CloudinaryConfig } from "@/lib/cloudinary-core";
 
 /**
  * Stockage des images.
  * - Développement local : disque local (UPLOAD_DIR), servi par /api/files/[name].
- * - Vercel : Blob public, servi directement par son CDN.
+ * - Production : Cloudinary (CLOUDINARY_CLOUD_NAME / API_KEY / API_SECRET), servi par son CDN.
  */
 export const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR ?? "./uploads");
+
+export function getCloudinaryConfig(): CloudinaryConfig | null {
+  const { CLOUDINARY_CLOUD_NAME: cloudName, CLOUDINARY_API_KEY: apiKey, CLOUDINARY_API_SECRET: apiSecret } = process.env;
+  return cloudName && apiKey && apiSecret ? { cloudName, apiKey, apiSecret } : null;
+}
 
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -32,23 +37,11 @@ export async function saveImage(file: File): Promise<string | null> {
   if (file.size > MAX_BYTES) throw new Error("Image trop lourde (10 Mo maximum).");
 
   const name = `${randomUUID()}.${ext}`;
-  const hasBlobCredentials = Boolean(
-    process.env.BLOB_READ_WRITE_TOKEN ||
-    (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN),
-  );
-
-  if (hasBlobCredentials) {
-    const blob = await put(`ajed/${name}`, file, {
-      access: "public",
-      addRandomSuffix: true,
-      contentType: file.type,
-      cacheControlMaxAge: 31536000,
-    });
-    return blob.url;
-  }
+  const cloudinary = getCloudinaryConfig();
+  if (cloudinary) return uploadToCloudinary(cloudinary, file, "image");
 
   if (process.env.VERCEL) {
-    throw new Error("Le stockage des images Vercel Blob n'est pas connecté à ce projet.");
+    throw new Error("Cloudinary n'est pas configuré (variables CLOUDINARY_* manquantes).");
   }
 
   await mkdir(UPLOAD_DIR, { recursive: true });
@@ -63,23 +56,11 @@ export async function saveVideo(file: File): Promise<string | null> {
   if (file.size > MAX_VIDEO_BYTES) throw new Error("Vidéo trop lourde (40 Mo maximum).");
 
   const name = `${randomUUID()}.${ext}`;
-  const hasBlobCredentials = Boolean(
-    process.env.BLOB_READ_WRITE_TOKEN ||
-    (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN),
-  );
-
-  if (hasBlobCredentials) {
-    const blob = await put(`ajed/${name}`, file, {
-      access: "public",
-      addRandomSuffix: true,
-      contentType: file.type,
-      cacheControlMaxAge: 31536000,
-    });
-    return blob.url;
-  }
+  const cloudinary = getCloudinaryConfig();
+  if (cloudinary) return uploadToCloudinary(cloudinary, file, "video");
 
   if (process.env.VERCEL) {
-    throw new Error("Le stockage vidéo Vercel Blob n'est pas connecté à ce projet.");
+    throw new Error("Cloudinary n'est pas configuré (variables CLOUDINARY_* manquantes).");
   }
 
   await mkdir(UPLOAD_DIR, { recursive: true });

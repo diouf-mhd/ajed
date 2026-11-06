@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { CATEGORIES, cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/cdn";
 
 export type GalleryPhoto = {
   id: string;
@@ -76,7 +77,7 @@ export function Gallery({ photos, showFilters = true }: { photos: GalleryPhoto[]
             <li key={p.id} className="mb-3 break-inside-avoid">
               <button type="button" onClick={() => setOpen(i)} className="block w-full overflow-hidden rounded-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.url} alt={p.title ?? p.actionTitle ?? "Photo de l'AJED"} loading="lazy" decoding="async"
+                <img src={optimizeImage(p.url, 600)} alt={p.title ?? p.actionTitle ?? "Photo de l'AJED"} loading="lazy" decoding="async"
                   className="w-full transition-transform duration-500 hover:scale-105" />
               </button>
             </li>
@@ -103,7 +104,7 @@ export function Gallery({ photos, showFilters = true }: { photos: GalleryPhoto[]
           )}
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.url} alt={current.title ?? current.actionTitle ?? "Photo de l'AJED"} className="max-h-[80vh] rounded-xl object-contain" />
+            <img src={optimizeImage(current.url, 1600)} alt={current.title ?? current.actionTitle ?? "Photo de l'AJED"} className="max-h-[80vh] rounded-xl object-contain" />
             {(current.title || current.actionTitle) && (
               <figcaption className="mt-3 text-center text-white/80">{current.title ?? current.actionTitle}</figcaption>
             )}

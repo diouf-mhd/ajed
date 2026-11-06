@@ -31,8 +31,18 @@ Le même fichier sert d'icône du site et d'image Open Graph.
 
 Par défaut, les images sont stockées sur disque (`UPLOAD_DIR`, servies par `/api/files/…`) :
 parfait pour un VPS/Docker avec volume persistant. Sur un hébergeur serverless (Vercel…),
-remplacez le corps de `saveImage()` dans `src/lib/storage.ts` par Vercel Blob, S3 ou Cloudinary
+renseignez les variables `CLOUDINARY_*` (voir `.env.example`) : les images et vidéos sont alors envoyées sur Cloudinary
 (le reste du code ne manipule que l'URL retournée).
+
+Pour transférer les médias déjà enregistrés dans la base, configurez également `DATABASE_URL` et
+`NEXT_PUBLIC_SITE_URL`, puis lancez d'abord une simulation et ensuite la migration réelle :
+
+```bash
+npx tsx --env-file=.env prisma/migrate-to-cloudinary.ts --dry-run
+npx tsx --env-file=.env prisma/migrate-to-cloudinary.ts
+```
+
+La simulation n'envoie aucun fichier et ne modifie pas la base. Faites une sauvegarde de la base avant la migration réelle.
 
 ## Structure
 

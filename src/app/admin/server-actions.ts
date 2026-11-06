@@ -6,7 +6,8 @@ import type { PhotoCategory } from "@prisma/client";
 import { checkPassword, createSession, destroySession, requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { SETTING_KEYS } from "@/lib/data";
-import { saveImage, saveVideo } from "@/lib/storage";
+import { isCloudinaryUrl } from "@/lib/cdn";
+import { getCloudinaryConfig, saveImage, saveVideo } from "@/lib/storage";
 import { CATEGORIES, slugify } from "@/lib/utils";
 
 // ---------- helpers ----------
@@ -158,11 +159,8 @@ export async function saveUploadedPhotos(input: {
   if (input.urls.length === 0 || input.urls.length > 50) throw new Error("Sélectionnez entre 1 et 50 photos.");
 
   const urls = input.urls.map((value) => {
-    const url = new URL(value);
-    if (url.protocol !== "https:" || !url.hostname.endsWith(".public.blob.vercel-storage.com")) {
-      throw new Error("URL de photo invalide.");
-    }
-    return url.toString();
+    if (!isCloudinaryUrl(value, getCloudinaryConfig()?.cloudName)) throw new Error("URL de photo invalide.");
+    return new URL(value).toString();
   });
   const selectedCategory = CATEGORIES.find((item) => item.value === input.category)?.value ?? "AUTRES";
   const date = new Date(`${input.date || new Date().toISOString().slice(0, 10)}T12:00:00Z`);

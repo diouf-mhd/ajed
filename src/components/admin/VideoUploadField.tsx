@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { uploadDirect } from "@/lib/cloudinary-client";
 
 const VIDEO_TYPES: Record<string, string> = {
   "video/mp4": "mp4",
@@ -19,8 +19,7 @@ export function VideoUploadField({ current, directUploads }: { current?: string 
 
   async function uploadVideo(file?: File) {
     if (!file) return;
-    const extension = VIDEO_TYPES[file.type];
-    if (!extension) {
+    if (!VIDEO_TYPES[file.type]) {
       setError("Format non pris en charge. Choisissez MP4, WebM ou MOV.");
       return;
     }
@@ -33,14 +32,7 @@ export function VideoUploadField({ current, directUploads }: { current?: string 
     setProgress(0);
     setError("");
     try {
-      const blob = await upload(`ajed/${crypto.randomUUID()}.${extension}`, file, {
-        access: "public",
-        contentType: file.type,
-        handleUploadUrl: "/api/blob",
-        multipart: file.size > 5 * 1024 * 1024,
-        onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
-      });
-      setUrl(blob.url);
+      setUrl(await uploadDirect(file, "video", setProgress));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Échec de l'envoi de la vidéo.");
     } finally {
