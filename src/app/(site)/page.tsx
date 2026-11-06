@@ -10,7 +10,7 @@ import { JoinSection } from "@/components/site/JoinSection";
 import { ContactInfo } from "@/components/site/ContactInfo";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Img } from "@/components/ui/Img";
-import { getBeforeAfters, getEditions, getFeaturedActions, getLatestActions, getNews, getPhotos, getQuartiers, getSettings, getStats, getUpcomingEvents } from "@/lib/data";
+import { getBeforeAfters, getCarouselActions, getEditions, getFeaturedActions, getLatestActions, getNews, getPhotos, getQuartiers, getSettings, getStats, getUpcomingEvents } from "@/lib/data";
 import { formatDate, isUpcoming } from "@/lib/utils";
 
 const MISSION = [
@@ -21,8 +21,8 @@ const MISSION = [
 ];
 
 export default async function HomePage() {
-  const [latest, cards, beforeAfters, stats, featured, photos, news, events, settings, editions, quartiers] = await Promise.all([
-    getLatestActions(5),
+  const [carouselActions, cards, beforeAfters, stats, featured, photos, news, events, settings, editions, quartiers] = await Promise.all([
+    getCarouselActions(),
     getLatestActions(6),
     getBeforeAfters(3),
     getStats(),
@@ -35,8 +35,9 @@ export default async function HomePage() {
     getQuartiers(),
   ]);
 
-  const slides = latest.map((a) => ({
+  const slides = carouselActions.map((a) => ({
     slug: a.slug, title: a.title, date: formatDate(a.date), time: a.time, location: a.location, summary: a.summary,
+    dayNumber: a.dayNumber,
     image: isUpcoming(a.date) ? a.poster ?? a.coverImage : a.coverImage,
   }));
   const heroImage = settings.heroImage;

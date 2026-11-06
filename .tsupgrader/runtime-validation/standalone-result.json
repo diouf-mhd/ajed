@@ -1,0 +1,97 @@
+{
+  "planHash": "eb5298fa6b9ca97d48c0cc8516f14e188bf36dcd856f92de68f87f6e5452add4",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-06T01:23:08.7689336Z",
+  "retryCount": 1,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E ajed-site@1.0.0 test\r\n\u003E tsx --test src/lib/carousel.test.ts\r\n\r\n\u2714 loads only the active slide and its neighbors (3.3284ms)\r\n\u2714 wraps neighbors around the first and last slides (0.5488ms)\r\n\u2714 handles a single slide and an empty carousel (0.49ms)\r\n\u2139 tests 3\r\n\u2139 suites 0\r\n\u2139 pass 3\r\n\u2139 fail 0\r\n\u2139 cancelled 0\r\n\u2139 skipped 0\r\n\u2139 todo 0\r\n\u2139 duration_ms 371.986\r\n",
+        "durationMs": 3587,
+        "testResults": {
+          "testFramework": "unknown",
+          "runnerDetectedFrom": "none",
+          "testsTotal": 0,
+          "testsPassed": 0,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": true
+        }
+      },
+      {
+        "name": "tsc-no-emit",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E ajed-site@1.0.0 typecheck\r\n\u003E tsc --noEmit\r\n\r\n",
+        "durationMs": 6472
+      },
+      {
+        "name": "production-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E ajed-site@1.0.0 build\r\n\u003E prisma generate \u0026\u0026 next build\r\n\r\nwarn The configuration property \u0060package.json#prisma\u0060 is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., \u0060prisma.config.ts\u0060).\r\nFor more information, see: https://pris.ly/prisma-config\r\n\r\nEnvironment variables loaded from .env\r\nPrisma schema loaded from prisma\\schema.prisma\r\n\r\n\u2714 Generated Prisma Client (v6.19.3) to .\\node_modules\\@prisma\\client in 213ms\r\n\r\nStart by importing your Prisma Client (See: https://pris.ly/d/importing-client)\r\n\r\nTip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints\r\n\r\n   \u25B2 Next.js 15.5.27\r\n   - Environments: .env\r\n   - Experiments (use with caution):\r\n     \u00B7 serverActions\r\n\r\n   Creating an optimized production build ...\r\n \u2713 Compiled successfully in 13.0s\r\n   Linting and checking validity of types ...\r\n   Collecting page data ...\r\n   Generating static pages (0/6) ...\r\n   Generating static pages (1/6) \r\n   Generating static pages (2/6) \r\n   Generating static pages (4/6) \r\n \u2713 Generating static pages (6/6)\r\n   Finalizing page optimization ...\r\n   Collecting build traces ...\r\n\r\nRoute (app)                                 Size  First Load JS\r\n\u250C \u0192 /                                    3.76 kB         113 kB\r\n\u251C \u25CB /_not-found                            992 B         104 kB\r\n\u251C \u0192 /a-propos                              182 B         106 kB\r\n\u251C \u0192 /actions                               182 B         106 kB\r\n\u251C \u0192 /actions/[slug]                        179 B         110 kB\r\n\u251C \u0192 /actualites                            182 B         106 kB\r\n\u251C \u0192 /actualites/[slug]                     182 B         106 kB\r\n\u251C \u0192 /admin                                 182 B         106 kB\r\n\u251C \u0192 /admin/actions                         182 B         106 kB\r\n\u251C \u0192 /admin/actions/[id]                   3.5 kB         110 kB\r\n\u251C \u0192 /admin/actions/new                    3.5 kB         110 kB\r\n\u251C \u0192 /admin/actualites                      182 B         106 kB\r\n\u251C \u0192 /admin/actualites/[id]               2.22 kB         108 kB\r\n\u251C \u0192 /admin/actualites/new                2.22 kB         108 kB\r\n\u251C \u0192 /admin/candidatures                  2.21 kB         108 kB\r\n\u251C \u0192 /admin/evenements                      182 B         106 kB\r\n\u251C \u0192 /admin/evenements/[id]               2.22 kB         108 kB\r\n\u251C \u0192 /admin/evenements/new                2.22 kB         108 kB\r\n\u251C \u0192 /admin/galerie                       4.14 kB         110 kB\r\n\u251C \u0192 /admin/login                           745 B         103 kB\r\n\u251C \u0192 /admin/parametres                    2.21 kB         108 kB\r\n\u251C \u0192 /admin/statistiques                  2.22 kB         108 kB\r\n\u251C \u0192 /api/cloudinary/sign                   135 B         103 kB\r\n\u251C \u0192 /api/files/[name]                      135 B         103 kB\r\n\u251C \u0192 /contact                             1.32 kB         104 kB\r\n\u251C \u0192 /galerie                             2.86 kB         109 kB\r\n\u251C \u25CB /manifest.webmanifest                  135 B         103 kB\r\n\u251C \u0192 /quartiers                             182 B         106 kB\r\n\u251C \u0192 /quartiers/[slug]                    2.87 kB         109 kB\r\n\u251C \u25CB /robots.txt                            135 B         103 kB\r\n\u2514 \u0192 /sitemap.xml                           135 B         103 kB\r\n\u002B First Load JS shared by all             103 kB\r\n  \u251C chunks/255-ce8c7c75002f810b.js       46.5 kB\r\n  \u251C chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB\r\n  \u2514 other shared chunks (total)          1.99 kB\r\n\r\n\r\n\u0192 Middleware                             39.5 kB\r\n\r\n\u25CB  (Static)   prerendered as static content\r\n\u0192  (Dynamic)  server-rendered on demand\r\n\r\n",
+        "durationMs": 65743
+      }
+    ],
+    "executions": [
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\IPD (THOMAS-SANKARA)\\Mes Projets Personnels\\web\\ajed-site",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tsc-no-emit",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "typecheck"
+        ],
+        "cwd": "C:\\IPD (THOMAS-SANKARA)\\Mes Projets Personnels\\web\\ajed-site",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "production-build",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\IPD (THOMAS-SANKARA)\\Mes Projets Personnels\\web\\ajed-site",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

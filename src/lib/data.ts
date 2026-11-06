@@ -20,6 +20,26 @@ export const getLatestActions = cache(async (take = 6, opts: { quartierSlug?: st
   return [...upcoming, ...past].slice(0, take);
 });
 
+export const getCarouselActions = cache(async () => {
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  const [upcoming, completed] = await Promise.all([
+    db.action.findMany({
+      where: { ...published, date: { gte: today } },
+      include: { quartiers: true, edition: true },
+      orderBy: { date: "asc" },
+      take: 30,
+    }),
+    db.action.findMany({
+      where: { ...published, date: { lt: today } },
+      include: { quartiers: true, edition: true },
+      orderBy: [{ dayNumber: { sort: "asc", nulls: "last" } }, { date: "asc" }],
+      take: 30,
+    }),
+  ]);
+  return [...upcoming, ...completed].slice(0, 30);
+});
+
 export const getAction = cache((slug: string) =>
   db.action.findFirst({
     where: { slug, ...published },
