@@ -33,7 +33,7 @@ export const getCarouselActions = cache(async () => {
     db.action.findMany({
       where: { ...published, date: { lt: today } },
       include: { quartiers: true, edition: true },
-      orderBy: [{ dayNumber: { sort: "asc", nulls: "last" } }, { date: "asc" }],
+      orderBy: [{ dayNumber: { sort: "desc", nulls: "last" } }, { date: "desc" }],
       take: 30,
     }),
   ]);
